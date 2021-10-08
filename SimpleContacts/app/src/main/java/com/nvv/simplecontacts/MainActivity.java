@@ -1,5 +1,6 @@
 package com.nvv.simplecontacts;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -42,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
     private ContactAdapter contactAdapter;
     private ContactsDb contactsDb;
     private ArrayList<Contact> contacts = new ArrayList<>();
+    private MainActivityButtonHandler buttonHandler;
+
+    private ActivityMainBinding activityMainBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +56,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        RecyclerView recyclerView = findViewById(R.id.recycleView);
+        activityMainBinding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        buttonHandler = new MainActivityButtonHandler(this);
+        activityMainBinding.setButtonHandler(buttonHandler);
+
+        RecyclerView recyclerView = activityMainBinding.layoutContentMain.recycleView;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
@@ -74,13 +83,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }).attachToRecyclerView(recyclerView);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addAndEditContact(false, null, -1);
-            }
-        });
+//        FloatingActionButton fab = findViewById(R.id.fab);
+//        fab.setOnClickListener(v -> addAndEditContact(false, null, -1));
     }
 
     public void addAndEditContact(boolean isUpdate, Contact contact, int position) {
@@ -237,6 +241,18 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(unused);
 
             loadContacts();
+        }
+    }
+
+    public class MainActivityButtonHandler{
+        Context context;
+
+        public MainActivityButtonHandler(Context context) {
+            this.context = context;
+        }
+
+        public void onButtonClicked(View view){
+            addAndEditContact(false, null, -1);
         }
     }
 }
