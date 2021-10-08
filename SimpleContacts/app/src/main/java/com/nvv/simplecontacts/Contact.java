@@ -65,4 +65,16 @@ public class Contact {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    public void setAll(String... args) {
+        this.firstName = args[0];
+        this.lastName = args[1];
+        this.email = args[2];
+        this.phoneNumber = args[3];
+    }
+
+    public String[] getArrayArgs() {
+        return new String[]{firstName, lastName, email, phoneNumber};
+    }
+
 }
